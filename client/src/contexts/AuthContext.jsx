@@ -2,26 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  role: 'client' | 'fundi' | 'admin';
-  isVerified: boolean;
-  token: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: any) => Promise<void>;
-  logout: () => void;
-  updateUser: (userData: any) => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -31,8 +12,8 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -62,7 +43,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email, password) => {
     try {
       const response = await axios.post('/api/auth/login', { email, password });
       const { token, ...userData } = response.data;
@@ -72,13 +53,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setUser({ ...userData, token });
       toast.success('Login successful!');
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
       throw error;
     }
   };
 
-  const register = async (userData: any) => {
+  const register = async (userData) => {
     try {
       const response = await axios.post('/api/auth/register', userData);
       const { token, ...user } = response.data;
@@ -88,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       setUser({ ...user, token });
       toast.success('Registration successful!');
-    } catch (error: any) {
+    } catch (error) {
       toast.error(error.response?.data?.message || 'Registration failed');
       throw error;
     }
@@ -101,7 +82,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     toast.success('Logged out successfully');
   };
 
-  const updateUser = (userData: any) => {
+  const updateUser = (userData) => {
     setUser(prev => prev ? { ...prev, ...userData } : null);
   };
 

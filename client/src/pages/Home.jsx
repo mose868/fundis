@@ -12,7 +12,7 @@ import {
   StarIcon
 } from '@heroicons/react/24/outline';
 
-const Home: React.FC = () => {
+const Home = () => {
   const { user } = useAuth();
 
   const services = [

@@ -4,32 +4,18 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-interface RegisterFormData {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  confirmPassword: string;
-  role: 'client' | 'fundi';
-  location: {
-    county: string;
-    city: string;
-    area: string;
-  };
-}
-
-const Register: React.FC = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterFormData>();
+const Register = () => {
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const defaultRole = searchParams.get('role') as 'client' | 'fundi' || 'client';
+  const defaultRole = searchParams.get('role') || 'client';
   const password = watch('password');
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data) => {
     try {
       setLoading(true);
       const { confirmPassword, ...userData } = data;
@@ -61,7 +47,6 @@ const Register: React.FC = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          {/* Role Selection */}
           <div>
             <label className="label">I want to:</label>
             <div className="grid grid-cols-2 gap-3">
@@ -94,7 +79,6 @@ const Register: React.FC = () => {
             </div>
           </div>
 
-          {/* Personal Information */}
           <div className="space-y-4">
             <div>
               <label className="label">Full Name</label>
@@ -148,7 +132,6 @@ const Register: React.FC = () => {
             </div>
           </div>
 
-          {/* Location */}
           <div className="space-y-4">
             <h3 className="font-medium text-gray-900">Location</h3>
             
@@ -196,7 +179,6 @@ const Register: React.FC = () => {
             </div>
           </div>
 
-          {/* Password */}
           <div className="space-y-4">
             <div className="relative">
               <label className="label">Password</label>
@@ -245,7 +227,6 @@ const Register: React.FC = () => {
             </div>
           </div>
 
-          {/* Terms */}
           <div className="flex items-start">
             <input
               id="terms"
@@ -280,4 +261,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register; 
+export default Register;

@@ -9,33 +9,8 @@ import {
   CurrencyDollarIcon
 } from '@heroicons/react/24/outline';
 
-interface Fundi {
-  _id: string;
-  user: {
-    name: string;
-    location: {
-      city: string;
-      area: string;
-    };
-    avatar: string;
-  };
-  services: Array<{
-    category: string;
-    basePrice: number;
-    priceUnit: string;
-  }>;
-  rating: {
-    average: number;
-    count: number;
-  };
-  completedJobs: number;
-  availability: {
-    isAvailable: boolean;
-  };
-}
-
-const SearchFundis: React.FC = () => {
-  const [fundis, setFundis] = useState<Fundi[]>([]);
+const SearchFundis = () => {
+  const [fundis, setFundis] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     category: '',
@@ -79,19 +54,17 @@ const SearchFundis: React.FC = () => {
     }
   };
 
-  const handleFilterChange = (key: string, value: string) => {
+  const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
   return (
     <div className="p-6">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Find a Fundi</h1>
         <p className="text-gray-600">Browse verified service providers in your area</p>
       </div>
 
-      {/* Search and Filters */}
       <div className="card mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
@@ -124,7 +97,6 @@ const SearchFundis: React.FC = () => {
           </button>
         </div>
 
-        {/* Advanced Filters */}
         {showFilters && (
           <div className="mt-4 pt-4 border-t grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -166,7 +138,6 @@ const SearchFundis: React.FC = () => {
         )}
       </div>
 
-      {/* Results */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
@@ -200,53 +171,55 @@ const SearchFundis: React.FC = () => {
                   </div>
                   <div className="ml-3">
                     <h3 className="font-semibold text-gray-900">{fundi.user.name}</h3>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <MapPinIcon className="h-4 w-4 mr-1" />
-                      {fundi.user.location?.city || 'Unknown'}, {fundi.user.location?.area || ''}
+                    <div className="flex items-center">
+                      <StarIcon className="h-4 w-4 text-yellow-400 fill-current" />
+                      <span className="text-sm text-gray-500 ml-1">
+                        {fundi.rating.average.toFixed(1)} ({fundi.rating.count})
+                      </span>
                     </div>
                   </div>
                 </div>
-                {fundi.availability.isAvailable && (
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
-                    Available
-                  </span>
-                )}
+                <div className={`px-2 py-1 rounded-full text-xs ${
+                  fundi.availability.isAvailable
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {fundi.availability.isAvailable ? 'Available' : 'Busy'}
+                </div>
               </div>
 
-              <div className="mb-4">
-                <div className="flex items-center mb-2">
-                  <div className="flex items-center">
-                    <StarIcon className="h-5 w-5 text-yellow-400 fill-current" />
-                    <span className="ml-1 font-medium">{fundi.rating.average.toFixed(1)}</span>
-                  </div>
-                  <span className="text-sm text-gray-500 ml-2">
-                    ({fundi.rating.count} reviews)
-                  </span>
-                  <span className="text-sm text-gray-500 ml-4">
-                    {fundi.completedJobs} jobs
-                  </span>
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center text-sm text-gray-500">
+                  <MapPinIcon className="h-4 w-4 mr-1" />
+                  {fundi.user.location.city}, {fundi.user.location.area}
+                </div>
+                <div className="flex items-center text-sm text-gray-500">
+                  <CurrencyDollarIcon className="h-4 w-4 mr-1" />
+                  From KES {Math.min(...fundi.services.map(s => s.basePrice)).toLocaleString()}
                 </div>
               </div>
 
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Services</h4>
-                <div className="space-y-1">
+                <h4 className="text-sm font-medium text-gray-900 mb-2">Services:</h4>
+                <div className="flex flex-wrap gap-1">
                   {fundi.services.slice(0, 3).map((service, index) => (
-                    <div key={index} className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600 capitalize">
-                        {service.category.replace('_', ' ')}
-                      </span>
-                      <span className="text-gray-900 font-medium">
-                        KES {service.basePrice}/{service.priceUnit.replace('_', ' ')}
-                      </span>
-                    </div>
+                    <span
+                      key={index}
+                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
+                    >
+                      {service.category}
+                    </span>
                   ))}
                   {fundi.services.length > 3 && (
-                    <p className="text-sm text-gray-500">
-                      +{fundi.services.length - 3} more services
-                    </p>
+                    <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                      +{fundi.services.length - 3} more
+                    </span>
                   )}
                 </div>
+              </div>
+
+              <div className="text-sm text-gray-500 mb-4">
+                {fundi.completedJobs} jobs completed
               </div>
 
               <Link
@@ -263,4 +236,4 @@ const SearchFundis: React.FC = () => {
   );
 };
 
-export default SearchFundis; 
+export default SearchFundis;

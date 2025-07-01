@@ -2,12 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-interface PrivateRouteProps {
-  children: React.ReactNode;
-  role?: 'client' | 'fundi' | 'admin';
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, role }) => {
+const PrivateRoute = ({ children, role }) => {
   const { user, loading } = useAuth();
 
   if (loading) {

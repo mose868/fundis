@@ -11,21 +11,9 @@ import {
   XCircleIcon
 } from '@heroicons/react/24/outline';
 
-interface DashboardData {
-  stats: {
-    total: number;
-    pending: number;
-    completed: number;
-    cancelled: number;
-    totalSpent: number;
-  };
-  recentBookings: any[];
-  favoriteFundis: any[];
-}
-
-const ClientDashboard: React.FC = () => {
+const ClientDashboard = () => {
   const { user } = useAuth();
-  const [data, setData] = useState<DashboardData | null>(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,7 +31,7 @@ const ClientDashboard: React.FC = () => {
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status) => {
     switch (status) {
       case 'pending':
         return <ClockIcon className="h-5 w-5 text-yellow-500" />;

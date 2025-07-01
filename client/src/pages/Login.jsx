@@ -4,19 +4,14 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
-const Login: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+const Login = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data) => {
     try {
       setLoading(true);
       await login(data.email, data.password);

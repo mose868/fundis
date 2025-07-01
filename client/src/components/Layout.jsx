@@ -14,7 +14,7 @@ import {
   UsersIcon
 } from '@heroicons/react/24/outline';
 
-const Layout: React.FC = () => {
+const Layout = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
