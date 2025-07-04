@@ -230,6 +230,15 @@ vercel
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+## Contributors
+- Vanessa Williams (https://github.com/nessa360)
+- Brian Kuria Mwangi (https://github.com/briankush)
+- Juanita Achieng (https://github.com/Juana-tech)
+- Victor (https://github.com/Vannexs)
+- Moses Kimani (https://github.com/mose868)
+- Mosa Mabina (https://github.com/MosaMabina)
+- Vicky Blessings (https://github.com/Vicky-Blessing)
+
 ## 📄 License
 
 This project is licensed under the MIT License.
