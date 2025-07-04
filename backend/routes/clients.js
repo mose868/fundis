@@ -18,7 +18,7 @@ router.get('/dashboard', protect, async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
-    const bookingStats = await Booking.aggregate([
+    const bookingStatsAgg = await Booking.aggregate([
       { $match: { client: req.user._id } },
       {
         $group: {
@@ -28,7 +28,34 @@ router.get('/dashboard', protect, async (req, res) => {
       }
     ]);
 
-    res.json({ recentBookings, bookingStats });
+    // Convert aggregation result to stats object
+    const bookingStats = {
+      total: 0,
+      pending: 0,
+      completed: 0,
+      totalSpent: 0
+    };
+
+    bookingStatsAgg.forEach(stat => {
+      bookingStats.total += stat.count;
+      if (stat._id === 'pending') bookingStats.pending = stat.count;
+      if (stat._id === 'completed') bookingStats.completed = stat.count;
+    });
+
+    // Calculate totalSpent
+    const totalSpentAgg = await Booking.aggregate([
+      { $match: { client: req.user._id, status: 'completed' } },
+      {
+        $group: {
+          _id: null,
+          totalSpent: { $sum: '$pricing.totalAmount' }
+        }
+      }
+    ]);
+
+    bookingStats.totalSpent = totalSpentAgg[0]?.totalSpent || 0;
+
+    res.json({ recentBookings, stats: bookingStats });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

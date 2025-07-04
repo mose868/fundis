@@ -84,7 +84,7 @@ const ClientDashboard = () => {
         <div className="card">
           <p className="text-sm text-gray-500">Total Spent</p>
           <p className="text-2xl font-bold text-gray-900">
-            KES {data?.stats?.totalSpent?.toLocaleString() ?? 0}
+            KES {data?.stats?.totalSpent ? data.stats.totalSpent.toLocaleString() : 0}
           </p>
         </div>
       </div>
