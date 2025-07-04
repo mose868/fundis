@@ -53,12 +53,12 @@ const FundiDetails = () => {
           category: serviceCategory,
           description: serviceDescription,
           basePrice: parseFloat(servicePrice) || 0,
-          priceUnit: 'per_hour'
+          priceUnit: fundi.services.find(s => s.category === serviceCategory)?.priceUnit || 'per_hour'
         },
         scheduling: {
           preferredDate: schedulingDate
         },
-        location: fundi.user.location,
+        location: fundi.user.location || {},
         pricing: {
           totalAmount: parseFloat(servicePrice) || 0,
           fundiEarnings: parseFloat(servicePrice) || 0,
@@ -124,7 +124,19 @@ const FundiDetails = () => {
           <label className="block font-semibold mb-1">Service Category</label>
           <select
             value={serviceCategory}
-            onChange={(e) => setServiceCategory(e.target.value)}
+            onChange={(e) => {
+              const selectedCategory = e.target.value;
+              setServiceCategory(selectedCategory);
+              // Set price based on selected service
+              const selectedService = fundi.services.find(s => s.category === selectedCategory);
+              if (selectedService) {
+                setServicePrice(selectedService.basePrice);
+                setServiceDescription(selectedService.description || '');
+              } else {
+                setServicePrice('');
+                setServiceDescription('');
+              }
+            }}
             className="input w-full"
             required
           >
