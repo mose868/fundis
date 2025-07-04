@@ -13,7 +13,11 @@ import {
 
 const ClientDashboard = () => {
   const { user } = useAuth();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({
+    stats: {},
+    recentBookings: [],
+    favoriteFundis: []
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,20 +71,20 @@ const ClientDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div className="card">
           <p className="text-sm text-gray-500">Total Bookings</p>
-          <p className="text-2xl font-bold text-gray-900">{data?.stats.total || 0}</p>
+          <p className="text-2xl font-bold text-gray-900">{data?.stats?.total ?? 0}</p>
         </div>
         <div className="card">
           <p className="text-sm text-gray-500">Active</p>
-          <p className="text-2xl font-bold text-blue-600">{data?.stats.pending || 0}</p>
+          <p className="text-2xl font-bold text-blue-600">{data?.stats?.pending ?? 0}</p>
         </div>
         <div className="card">
           <p className="text-sm text-gray-500">Completed</p>
-          <p className="text-2xl font-bold text-green-600">{data?.stats.completed || 0}</p>
+          <p className="text-2xl font-bold text-green-600">{data?.stats?.completed ?? 0}</p>
         </div>
         <div className="card">
           <p className="text-sm text-gray-500">Total Spent</p>
           <p className="text-2xl font-bold text-gray-900">
-            KES {data?.stats.totalSpent?.toLocaleString() || 0}
+            KES {data?.stats?.totalSpent?.toLocaleString() ?? 0}
           </p>
         </div>
       </div>
@@ -121,7 +125,7 @@ const ClientDashboard = () => {
           </Link>
         </div>
 
-        {data?.recentBookings.length === 0 ? (
+        {(!data?.recentBookings || data.recentBookings.length === 0) ? (
           <p className="text-gray-500 text-center py-8">No bookings yet</p>
         ) : (
           <div className="space-y-4">
@@ -153,7 +157,7 @@ const ClientDashboard = () => {
       </div>
 
       {/* Favorite Fundis */}
-      {data?.favoriteFundis.length > 0 && (
+      {data?.favoriteFundis && data.favoriteFundis.length > 0 && (
         <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Your Top Fundis</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -193,4 +197,4 @@ const ClientDashboard = () => {
   );
 };
 
-export default ClientDashboard; 
+export default ClientDashboard;

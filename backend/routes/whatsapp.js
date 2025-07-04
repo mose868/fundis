@@ -1,12 +1,10 @@
+require('dotenv').config();
+
 const express = require('express');
 const router = express.Router();
-const twilio = require('twilio');
 const Booking = require('../models/Booking');
 const Fundi = require('../models/Fundi');
 const User = require('../models/User');
-
-// Initialize Twilio client
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 // Service categories for WhatsApp bot
 const SERVICE_CATEGORIES = {
@@ -27,8 +25,8 @@ const SERVICE_CATEGORIES = {
 router.post('/webhook', async (req, res) => {
   try {
     const { From, Body, ProfileName } = req.body;
-    const phoneNumber = From.replace('whatsapp:', '');
-    const message = Body.trim().toLowerCase();
+    const phoneNumber = From?.replace('whatsapp:', '') || '';
+    const message = Body?.trim().toLowerCase() || '';
 
     let response = '';
 
@@ -61,14 +59,8 @@ router.post('/webhook', async (req, res) => {
       response = "🤔 I didn't understand that. Type 'hi' to see available services.";
     }
 
-    // Send response
-    await client.messages.create({
-      from: process.env.TWILIO_WHATSAPP_NUMBER,
-      to: From,
-      body: response
-    });
-
-    res.status(200).json({ message: 'Response sent' });
+    // Instead of sending a WhatsApp message, just return the response as JSON
+    res.status(200).json({ message: response });
   } catch (error) {
     console.error('WhatsApp webhook error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -95,13 +87,8 @@ router.post('/notify-fundi', async (req, res) => {
 
     const message = `🔔 *New Booking Request!*\n\n👤 *Client:* ${booking.client.name}\n🛠️ *Service:* ${booking.service.category}\n📍 *Location:* ${booking.location.address}\n💰 *Amount:* KES ${booking.pricing.totalAmount}`;
 
-    await client.messages.create({
-      from: process.env.TWILIO_WHATSAPP_NUMBER,
-      to: `whatsapp:${booking.fundi.user.phone}`,
-      body: message
-    });
-
-    res.json({ message: 'Notification sent to fundi' });
+    // Instead of sending a WhatsApp message, just return the message as JSON
+    res.json({ message: 'Notification to fundi (Twilio removed)', content: message });
   } catch (error) {
     console.error('Error sending notification:', error);
     res.status(500).json({ error: 'Failed to send notification' });
@@ -151,13 +138,8 @@ router.post('/notify-client', async (req, res) => {
         statusMessage = customMessage || `📋 Your ${service} booking status: ${status}`;
     }
 
-    await client.messages.create({
-      from: process.env.TWILIO_WHATSAPP_NUMBER,
-      to: `whatsapp:${clientPhone}`,
-      body: statusMessage
-    });
-
-    res.json({ message: 'Notification sent to client' });
+    // Instead of sending a WhatsApp message, just return the message as JSON
+    res.json({ message: 'Notification to client (Twilio removed)', content: statusMessage });
   } catch (error) {
     console.error('Error sending client notification:', error);
     res.status(500).json({ error: 'Failed to send notification' });
@@ -332,4 +314,4 @@ async function handleBookingRequest(phoneNumber, fundiId, clientName) {
   }
 }
 
-module.exports = router; 
+module.exports = router;
