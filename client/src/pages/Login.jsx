@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 const Login = () => {
+  useEffect(() => {
+    // Throw a runtime error when component mounts
+    throw new Error('Deliberate runtime error for testing');
+  }, []);
+
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -153,4 +158,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
